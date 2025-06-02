@@ -1,0 +1,32 @@
+// 📌 Este bloque indica que usarás SQLite como base de datos
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 📌 Este bloque activa el generador de Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+model Estudiante {
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  correo       String        @unique
+  inscripciones Inscripcion[]
+}
+
+model Curso {
+  id           Int           @id @default(autoincrement())
+  nombreCurso  String
+  descripcion  String?
+  inscripciones Inscripcion[]
+}
+
+model Inscripcion {
+  id             Int        @id @default(autoincrement())
+  estudiante     Estudiante @relation(fields: [estudianteId], references: [id])
+  estudianteId   Int
+  curso          Curso      @relation(fields: [cursoId], references: [id])
+  cursoId        Int
+  fechaInscripcion DateTime @default(now())
+}
